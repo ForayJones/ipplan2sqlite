@@ -115,18 +115,14 @@ def create(conn):
         n.node_id,
         h.ipv4_addr_txt,
         n.ipv4_txt,
-        substr(o.value, 1, 1) AS
-            sw, LOWER(n.short_name) ||
-            '-' ||
-            substr(o.value, 1, 1) ||
-            '.event.dreamhack.local'
-            AS switch_name
+        substr(o.value, 1, 1) AS sw,
+		LOWER(n.short_name) || '-' || substr(o.value, 1, 1) AS switch_name
     FROM
         option o,
         network n,
         host h
     WHERE
-        h.name = switch_name
+        h.name LIKE switch_name || '%'
         AND o.name = 'sw'
         AND n.node_id = o.node_id
         AND sw <> ''
@@ -137,18 +133,14 @@ def create(conn):
         n.node_id,
         h.ipv4_addr_txt,
         n.ipv4_txt,
-        substr(o.value, 2, 1) AS
-            sw, LOWER(n.short_name) ||
-            '-' ||
-            substr(o.value, 2, 1) ||
-            '.event.dreamhack.local'
-            AS switch_name
+        substr(o.value, 2, 1) AS sw,
+		LOWER(n.short_name) || '-' || substr(o.value, 2, 1) AS switch_name
     FROM
         option o,
         network n,
         host h
     WHERE
-        h.name = switch_name
+        h.name LIKE switch_name || '%'
         AND o.name = 'sw'
         AND n.node_id = o.node_id
         AND sw <> ''
@@ -158,18 +150,14 @@ def create(conn):
         n.node_id,
         h.ipv4_addr_txt,
         n.ipv4_txt,
-        substr(o.value, 3, 1) AS
-            sw, LOWER(n.short_name) ||
-            '-' ||
-            substr(o.value, 3, 1) ||
-            '.event.dreamhack.local'
-            AS switch_name
+        substr(o.value, 3, 1) AS sw,
+		LOWER(n.short_name) || '-' || substr(o.value, 3, 1) AS switch_name
     FROM
         option o,
         network n,
         host h
     WHERE
-        h.name = switch_name
+        h.name LIKE switch_name || '%'
         AND o.name = 'sw'
         AND n.node_id = o.node_id
         AND sw <> '';''')
