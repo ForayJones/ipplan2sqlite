@@ -3,13 +3,14 @@ import re
 import socket
 import struct
 import sys
+import logging
 from binascii import hexlify
 
 MODULE = sys.modules[__name__]
 
 SYNTAX = {
   "^@@": "domain",
-  "^$$": "host",
+  "^\$\$": "host",
   "^[A-Z]": "network"
 }
 
@@ -60,6 +61,8 @@ def master_network(l, c, r):
         c.execute(
             'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             row)
+			
+		logging.debug("Domain: %s IPV4: %s IPV6: %s", name, ipv4, ipv6)
     else:
         return l
     return
@@ -91,6 +94,8 @@ def host(l, c, network_id):
     c.execute('INSERT INTO host VALUES (?,?,?,?,?,?)', row)
 
     options(c, node_id, l[3])
+	
+	logging.debug("  HOST: %s OPTIONS: %s", name, l[3])
 
     return
 
@@ -131,6 +136,7 @@ def network(l, c, r):
 
     options(c, node_id, l[4])
 
+	logging.debug("Processed network %s[NETID: %s] with VLAN %s, terminator %s, and options %s", name, node_id, vlan, terminator, l[4])
     return node_id
 
 
@@ -196,6 +202,7 @@ def parse(lines, c):
             continue
         func = parser_func(line)
         if func:
-            parse_using = getattr(MODULE, func, network_id)
+            logging.debug("Processing %s", func)
+			parse_using = getattr(MODULE, func, network_id)
             result = parse_using(line, c, network_id)
             network_id = result if result is not None else network_id
