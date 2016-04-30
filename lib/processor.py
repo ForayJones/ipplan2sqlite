@@ -62,7 +62,8 @@ def master_network(l, c, r):
             'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             row)
 			
-		logging.debug("Domain: %s IPV4: %s IPV6: %s", name, ipv4, ipv6)
+			
+	logging.debug("Domain: %s IPV4: %s IPV6: %s", name, ipv4, ipv6)
     else:
         return l
     return
@@ -95,7 +96,7 @@ def host(l, c, network_id):
 
     options(c, node_id, l[3])
 	
-	logging.debug("  HOST: %s OPTIONS: %s", name, l[3])
+    logging.debug("  HOST: %s OPTIONS: %s", name, l[3])
 
     return
 
@@ -135,8 +136,8 @@ def network(l, c, r):
         row)
 
     options(c, node_id, l[4])
-
-	logging.debug("Processed network %s[NETID: %s] with VLAN %s, terminator %s, and options %s", name, node_id, vlan, terminator, l[4])
+	
+    logging.debug("Processed network %s[NETID: %s] with VLAN %s, terminator %s, and options %s", name, node_id, vlan, terminator, l[4])
     return node_id
 
 
@@ -202,7 +203,7 @@ def parse(lines, c):
             continue
         func = parser_func(line)
         if func:
-            logging.debug("Processing %s", func)
+			logging.debug("Processing %s", func)
 			parse_using = getattr(MODULE, func, network_id)
             result = parse_using(line, c, network_id)
             network_id = result if result is not None else network_id
