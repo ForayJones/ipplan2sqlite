@@ -8,8 +8,8 @@ from binascii import hexlify
 MODULE = sys.modules[__name__]
 
 SYNTAX = {
-  "^#@": "master_network",
-  "^#\$": "host",
+  "^@@": "domain",
+  "^$$": "host",
   "^[A-Z]": "network"
 }
 
@@ -25,7 +25,7 @@ def master_network(l, c, r):
     global _current_v6_base
     if r is not None:
         node_id = node(c)
-        short_name = 'DREAMHACK'
+        short_name = 'LAN'
         vlan = 0
         terminator = ''
 
@@ -49,7 +49,7 @@ def master_network(l, c, r):
         ipv6_netmask = 64
         ipv6_gateway = "%s::1" % (_current_v6_base, )
 
-        name = '%s@%s' % (_current_domain, short_name)
+        name = '%s.%s' % (_current_domain, short_name)
 
         row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
                str(ipv4), str(ipv6), ip2long(
@@ -178,8 +178,8 @@ def ip2long(ip, version):
         return struct.unpack("!L", packedIP)[0]
     else:
         return int(hexlify(socket.inet_pton(socket.AF_INET6, ip)), 16)
-
-
+		
+		
 def parser_func(l):
     for exp in SYNTAX:
         if re.match(exp, l[0]):
