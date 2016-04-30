@@ -203,7 +203,7 @@ def parse(lines, c):
             continue
         func = parser_func(line)
         if func:
-			logging.debug("Processing %s", func)
-			parse_using = getattr(MODULE, func, network_id)
+            logging.debug("Processing %s", func)
+            parse_using = getattr(MODULE, func, network_id)
             result = parse_using(line, c, network_id)
             network_id = result if result is not None else network_id
