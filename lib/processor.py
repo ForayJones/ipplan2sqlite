@@ -12,7 +12,7 @@ SYNTAX = {
   "^@@": "domain",
   "^\$\$": "host",
   "^[A-Z]": "network"
-}
+  }
 
 _current_domain = None
 _current_v6_base = None
@@ -21,7 +21,9 @@ _domains = set()
 def get_domains():
   return list(_domains)
 
-def master_network(l, c, r):
+  
+# Process domain directives
+def domain(l, c, r):
     global _current_domain
     global _current_v6_base
     if r is not None:
