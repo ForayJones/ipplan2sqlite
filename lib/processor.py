@@ -28,14 +28,13 @@ def domain(l, c, r):
     global _current_v6_base
     if r is not None:
         node_id = node(c)
-        short_name = 'LAN'
+        short_name = 'LOCAL'
         vlan = 0
         terminator = ''
 
         # Set current domain
-        domain = re.match(r'IPV4-([A-Z0-9]+)-NET', r[1]).group(1).upper()
-        _current_domain = domain
-        _domains.add(domain)
+        _current_domain = '%s.%s' % (re.match(r'IPV4-([A-Za-z0-9.]+)-NET', r[1]).group(1).upper(), short_name)
+        _domains.add(_current_domain)
 
         # IPv4
         ipv4 = r[2]
@@ -52,9 +51,7 @@ def domain(l, c, r):
         ipv6_netmask = 64
         ipv6_gateway = "%s::1" % (_current_v6_base, )
 
-        name = '%s.%s' % (_current_domain, short_name)
-
-        row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
+        row = [node_id, _current_domain, short_name, vlan, terminator, ip2long(ipv4, 4),
                str(ipv4), str(ipv6), ip2long(
                    ipv4_netmask, 4), str(ipv4_netmask),
                str(ipv6_netmask), ip2long(ipv4_gateway, 4), str(ipv4_gateway),
@@ -65,7 +62,7 @@ def domain(l, c, r):
             row)
 			
 			
-	logging.debug("Domain: %s IPV4: %s IPV6: %s", name, ipv4, ipv6)
+	logging.debug("Domain: %s IPV4: %s IPV6: %s", _current_domain, ipv4, ipv6)
     else:
         return l
     return
@@ -73,11 +70,13 @@ def domain(l, c, r):
 
 def host(l, c, network_id):
     node_id = node(c)
-    c.execute('SELECT vlan FROM network WHERE node_id = ?', (network_id, ))
-    vlan = c.fetchone()[0]
+    c.execute('SELECT name, vlan FROM network WHERE node_id = ?', (network_id, ))
+    temp = c.fetchone()
+    network = temp[0]
+    vlan = temp[1]
     vlan = int(vlan) if not vlan is None else None
 
-    name = l[1]
+    name = '%s.%s' % (l[1], network)
     ipv4_addr = l[2]
     if vlan:
         last_digits = int(str(ipv4_addr).split('.')[-1])
@@ -98,7 +97,7 @@ def host(l, c, network_id):
 
     options(c, node_id, l[3])
 	
-    logging.debug("  HOST: %s OPTIONS: %s", name, l[3])
+    logging.debug("    HOST: %s OPTIONS: %s", name, l[3])
 
     return
 
@@ -127,7 +126,7 @@ def network(l, c, r):
         ipv6_netmask = None
         ipv6_gateway = None
 
-    name = '%s@%s' % (_current_domain, short_name)
+    name = '%s.%s' % (short_name, _current_domain)
 
     row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
            str(ipv4), ipv6, ip2long(ipv4_netmask, 4), str(ipv4_netmask),
@@ -139,7 +138,7 @@ def network(l, c, r):
 
     options(c, node_id, l[4])
 	
-    logging.debug("Processed network %s[NETID: %s] with VLAN %s, terminator %s, and options %s", name, node_id, vlan, terminator, l[4])
+    logging.debug("  Network %s[NETID: %s] with VLAN %s, terminator %s, and options %s", name, node_id, vlan, terminator, l[4])
     return node_id
 
 

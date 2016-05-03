@@ -116,7 +116,7 @@ def create(conn):
         h.ipv4_addr_txt,
         n.ipv4_txt,
         substr(o.value, 1, 1) AS sw,
-		LOWER(n.short_name) || '-' || substr(o.value, 1, 1) AS switch_name
+		LOWER(n.short_name) || '-' || 'sw' || substr(o.value, 1, 1) AS switch_name
     FROM
         option o,
         network n,
@@ -134,7 +134,7 @@ def create(conn):
         h.ipv4_addr_txt,
         n.ipv4_txt,
         substr(o.value, 2, 1) AS sw,
-		LOWER(n.short_name) || '-' || substr(o.value, 2, 1) AS switch_name
+		LOWER(n.short_name) || '-' || 'sw' || substr(o.value, 2, 1) AS switch_name
     FROM
         option o,
         network n,
@@ -151,7 +151,7 @@ def create(conn):
         h.ipv4_addr_txt,
         n.ipv4_txt,
         substr(o.value, 3, 1) AS sw,
-		LOWER(n.short_name) || '-' || substr(o.value, 3, 1) AS switch_name
+		LOWER(n.short_name) || '-' || 'sw' || substr(o.value, 3, 1) AS switch_name
     FROM
         option o,
         network n,
