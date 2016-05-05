@@ -128,7 +128,7 @@ def network(l, c, r):
 
     name = '%s.%s' % (short_name, _current_domain)
     
-    c.execute('SELECT node_id FROM network WHERE name = ?', (_curent_domain,))
+    c.execute('SELECT node_id FROM network WHERE name = ?', (_current_domain,))
     parent_node_id = c.fetchone()[0]
 
     row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
