@@ -34,6 +34,7 @@ def create(conn):
     ipv6_gateway_txt TEXT,
     ipv4_netmask_dec INTEGER,
     ipv6_capable INTEGER,
+    parent_node_id INTEGER,
     FOREIGN KEY (node_id) REFERENCES node (id))''')
 
     # Options

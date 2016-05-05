@@ -158,7 +158,7 @@ class FirewallGenerator(object):
     def public(self):
         # List public networks
         network_node_ids = {}
-        for network in ['EVENT@DREAMHACK', 'RFC_10', 'RFC_172', 'RFC_192']:
+        for network in ['LOCAL', 'RFC_10', 'RFC_172', 'RFC_192']:
             network_node_ids[network] = self.get_network_node_id(network)
 
         # Select all servers providing services to their VLAN
@@ -212,12 +212,14 @@ class FirewallGenerator(object):
               (node_id, ))
         else:
          self.c.execute(
-                'SELECT network.name, network.node_id FROM network, host '
+                'SELECT network.name, network.node_id, network.parent_node_id FROM network, host '
                 'WHERE network.node_id = host.network_id AND host.node_id = ?',
                 (node_id, ))
 
-        network, network_id = self.c.fetchone()
-        domain = network.split('@')[0]
+        network, network_id, domain_id = self.c.fetchone()
+        
+        self.c.execute('SELECT name FROM network WHERE node_id = ?', (domain_id,))
+        domain =  self.c.fetchone()[0]
 
         self.c.execute(
             'SELECT value FROM option WHERE name = "flow" AND node_id = ?',
@@ -270,7 +272,7 @@ class FirewallGenerator(object):
 
     def get_network_node_id(self, network_name):
         self.c.execute(
-                'SELECT node_id FROM network WHERE name = ?', (network_name,))
+                'SELECT node_id FROM network WHERE short_name = ?', (network_name,))
         return next(iter(self.c.fetchone() or ()), None)
 
 
