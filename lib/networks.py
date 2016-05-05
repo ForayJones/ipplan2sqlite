@@ -26,10 +26,10 @@ def add_all_rfc_1918(c):
         row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
                str(ipv4), None, ip2long(ipv4_netmask, 4), str(ipv4_netmask),
                None, ip2long(ipv4_gateway, 4), str(ipv4_gateway),
-               None, int(ipv4_netmask_dec), 0]
+               None, int(ipv4_netmask_dec), 0, 0]
 
         c.execute(
-            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             row)
 
 
@@ -53,8 +53,8 @@ def add_any(c):
 
     row = [node_id, name, short_name, vlan, terminator, 0,
            str(ipv4), str(ipv6), None, None, ipv6_netmask,
-           ipv4_gateway, ipv4_gateway, ipv6_gateway, ipv4_netmask_dec, 1]
+           ipv4_gateway, ipv4_gateway, ipv6_gateway, ipv4_netmask_dec, 1, 0]
 
     c.execute(
-        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         row)

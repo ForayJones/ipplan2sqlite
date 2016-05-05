@@ -55,10 +55,10 @@ def domain(l, c, r):
                str(ipv4), str(ipv6), ip2long(
                    ipv4_netmask, 4), str(ipv4_netmask),
                str(ipv6_netmask), ip2long(ipv4_gateway, 4), str(ipv4_gateway),
-               str(ipv6_gateway), int(ipv4_netmask_dec), 1]
+               str(ipv6_gateway), int(ipv4_netmask_dec), 1, 0]
 
         c.execute(
-            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             row)
 			
 			
@@ -127,13 +127,16 @@ def network(l, c, r):
         ipv6_gateway = None
 
     name = '%s.%s' % (short_name, _current_domain)
+    
+    c.execute('SELECT node_id FROM network WHERE name = ?', (_curent_domain,))
+    parent_node_id = c.fetchone()[0]
 
     row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
            str(ipv4), ipv6, ip2long(ipv4_netmask, 4), str(ipv4_netmask),
            ipv6_netmask, ip2long(ipv4_gateway, 4), str(ipv4_gateway),
-           ipv6_gateway, int(ipv4_netmask_dec), 1 if not ipv6 is None else 0]
+           ipv6_gateway, int(ipv4_netmask_dec), 1 if not ipv6 is None else 0, parent_node_id]
     c.execute(
-        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         row)
 
     options(c, node_id, l[4])
